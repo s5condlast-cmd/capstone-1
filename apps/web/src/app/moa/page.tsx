@@ -131,7 +131,7 @@ export default function MOAPage() {
                         </svg>
                         <span className="text-sm font-medium" style={{ color: "#1E293B" }}>{fileName}</span>
                       </div>
-                      <button onClick={() => { setUploadedFile(null); setFileName(false); }} style={{ color: "#64748B", background: "none", border: "none", cursor: "pointer" }}>✕</button>
+                      <button onClick={() => { setUploadedFile(null); setFileName(""); }} style={{ color: "#64748B", background: "none", border: "none", cursor: "pointer" }}>✕</button>
                     </div>
                   </div>
                   <div className="p-4 rounded-xl border" style={{ borderColor: "#E2E8F0", minHeight: "400px" }}>

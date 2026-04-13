@@ -39,6 +39,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [session, setSession] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<"users" | "batches" | "templates" | "monitoring">("users");
   const [showModal, setShowModal] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
@@ -68,6 +69,7 @@ export default function AdminPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setMounted(true);
     const currentSession = getSession();
     if (!currentSession || currentSession.role !== "admin") {
       router.push("/login");
@@ -76,15 +78,19 @@ export default function AdminPage() {
     setSession(currentSession);
     setUsers(getUsers());
     
-    const savedAssignments = localStorage.getItem("practicum_adviser_assignments");
-    if (savedAssignments) {
-      setStudentAdvisers(JSON.parse(savedAssignments));
+    if (typeof window !== "undefined") {
+      const savedAssignments = localStorage.getItem("practicum_adviser_assignments");
+      if (savedAssignments) {
+        setStudentAdvisers(JSON.parse(savedAssignments));
+      }
     }
   }, []);
 
   const saveAdviserAssignments = (data: StudentAdviser[]) => {
     setStudentAdvisers(data);
-    localStorage.setItem("practicum_adviser_assignments", JSON.stringify(data));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("practicum_adviser_assignments", JSON.stringify(data));
+    }
   };
 
   const handleLogout = () => {
@@ -200,7 +206,18 @@ export default function AdminPage() {
 
   const students = users.filter(u => u.role === "student");
   const advisors = users.filter(u => u.role === "advisor");
-  const submissions = JSON.parse(localStorage.getItem("practicum_submissions") || "[]");
+  const [submissions, setSubmissions] = useState<unknown[]>([]);
+
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined") {
+      const saved = localStorage.getItem("practicum_submissions");
+      if (saved) {
+        setSubmissions(JSON.parse(saved));
+      }
+    }
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   if (!session) return null;
 

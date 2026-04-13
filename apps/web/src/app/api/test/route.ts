@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { aiRateLimiter } from "@/lib/rate-limiter";
-import { generateWithGroq } from "@/lib/groq";
+import { aiRateLimiter } from "@/lib/ai/rate-limiter";
+import { generateWithGroq } from "@/lib/ai/groq";
 
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
